@@ -25,8 +25,14 @@ def get_container_status(status):
 
 def get_containers(all=False):
     containers = []
-    for container in client.containers.list(all=all):
-        containers.append((container.name, colored(get_image_tag(container.image.tags), "cyan"), get_container_status(container.status)))
+    while True:
+        try: 
+            list_of_containers = client.containers.list(all=all)
+            break
+        except: 
+            continue
+    for container in list_of_containers:
+            containers.append((container.name, colored(get_image_tag(container.image.tags), "cyan"), get_container_status(container.status)))
     return containers
 
 def get_container_names(list_of_containers):
