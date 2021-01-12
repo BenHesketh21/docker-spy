@@ -4,6 +4,8 @@ import os
 from tabulate import tabulate
 from termcolor import colored
 import sys
+import datetime
+from dateutil.parser import parse
 
 client = docker.from_env()
 
@@ -12,6 +14,12 @@ def get_image_tag(image_tags):
         return "None"
     else:
         return image_tags[0]
+
+def get_age(creation_time):
+    now = datetime.datetime.utcnow()
+    age = now - creation_time
+    age = age - datetime.timedelta(microseconds=age.microseconds)
+    return age
 
 def get_container_status(status):
     green = ["created", "running"]
@@ -32,7 +40,10 @@ def get_containers(all=False):
         except: 
             continue
     for container in list_of_containers:
-            containers.append((container.name, colored(get_image_tag(container.image.tags), "cyan"), get_container_status(container.status)))
+        created = get_age(parse(container.attrs['Created']).replace(tzinfo=None))
+        image = colored(get_image_tag(container.image.tags), "cyan")
+        status = get_container_status(container.status)
+        containers.append((container.name, image, status, created))
     return containers
 
 def get_container_names(list_of_containers):
@@ -48,8 +59,9 @@ def get_images():
     images = []
     for image in client.images.list():
         if image.attrs["RepoTags"] != []:
+            created = get_age(parse(image.attrs["Created"]).replace(tzinfo=None))
             name_and_tag = image.tags[0].split(":")
-            images.append((name_and_tag[0], name_and_tag[1]))
+            images.append((name_and_tag[0], name_and_tag[1], created))
     return images
 
 def cls(): 
@@ -60,7 +72,7 @@ def get_networks():
     for network in client.networks.list():
         network.reload()
         if network.attrs["IPAM"]["Options"] == {} or "com.docker.compose.network" in network.attrs["Labels"].keys():
-            networks.append((network.name, get_container_names(network.containers)))
+            networks.append((network.name, len(network.containers), get_age(parse(network.attrs["Created"]).replace(tzinfo=None))))
     return sorted(networks)
 
 def title(title):
@@ -73,11 +85,11 @@ while True:
     screen = ""
     args = sys.argv
     if "images" in args:
-        screen += title("Images") + tabulate(get_images(), headers=["Name", "Tags"])
+        screen += title("Images") + tabulate(get_images(), headers=["Name", "Tags", "Age"])
     if "containers" in args:
-        screen += title("Containers") + tabulate(get_containers(all=True), headers=["Name", "Image", "Status"])
+        screen += title("Containers") + tabulate(get_containers(all=True), headers=["Name", "Image", "Status", "Age"])
     if "networks" in args:
-        screen += title("Networks") + tabulate(get_networks(), headers=["Name", "Attached Containers"])
+        screen += title("Networks") + tabulate(get_networks(), headers=["Name", "Attached Containers", "Age"])
     if screen != last_screen:
         cls()
         print(screen)
