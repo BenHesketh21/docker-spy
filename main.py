@@ -19,6 +19,8 @@ def get_age(creation_time):
     now = datetime.datetime.utcnow()
     age = now - creation_time
     age = age - datetime.timedelta(microseconds=age.microseconds)
+    if age.days != 0:
+        return f"{age.days} Days"
     return age
 
 def get_container_status(status):
@@ -78,13 +80,31 @@ def get_networks():
 def title(title):
     return "\n\n======\n\n" +colored(title + "\n\n", "grey", attrs=["bold", "underline"])
 
-
+def add_op(op_title, data, headers):
+    return title(op_title) + tabulate(data, headers=headers)
 
 last_screen = ""
+empty = False
 while True:
     screen = ""
     args = sys.argv
+    if len(args) == 1:
+        if not empty:
+            move_on = input("Are you sure you don't want to see any resources? N/Y: ")
+            if move_on == "N" or move_on == "n":
+                resources = input("Which resources would you like to see? (Seperated by spaces)")
+                all_res = ["containers", "networks", "images"]
+                for resource in all_res:
+                    if resource in resources:
+                        args.append(resource)
+            if move_on == "Y" or move_on == "Y":
+                empty = True
+                print("Okay... Have fun")
+
+        
+    all_ops = []
     if "images" in args:
+        all_ops.append
         screen += title("Images") + tabulate(get_images(), headers=["Name", "Tags", "Age"])
     if "containers" in args:
         screen += title("Containers") + tabulate(get_containers(all=True), headers=["Name", "Image", "Status", "Age"])
