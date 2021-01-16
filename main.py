@@ -6,7 +6,10 @@ from tabulate import tabulate
 from docker_spy.containers import get_containers
 from docker_spy.images import get_images
 from docker_spy.networks import get_networks
-from docker_spy.utils import title, cls
+from docker_spy.utils import title, cls, check_swarm
+from docker_spy.volumes import get_volumes
+from docker_spy.nodes import get_nodes
+from docker_spy.services import get_services
 
 last_screen = ""
 empty = False
@@ -29,11 +32,19 @@ while True:
     all_ops = []
     if "images" in args:
         all_ops.append
-        screen += title("Images") + tabulate(get_images(), headers=["Name", "Tags", "Age"])
+        screen += title("Images") + tabulate(get_images(), headers=["ID", "Name", "Tags", "Age"])
     if "containers" in args:
-        screen += title("Containers") + tabulate(get_containers(all=True), headers=["Name", "Image", "Status", "Age"])
+        screen += title("Containers") + tabulate(get_containers(all=True), headers=["ID", "Name", "Image", "Status", "Age"])
     if "networks" in args:
         screen += title("Networks") + tabulate(get_networks(), headers=["Name", "Attached Containers", "Age"])
+    if "volumes" in args:
+        screen += title("Volumes") + tabulate(get_volumes(), headers=["ID", "Name", "Attrs"])
+    if "swarm" in args:
+        if not check_swarm():
+            screen += "\n\nSwarm section is returning an error, are you sure the swarm is initalized?"
+        else:
+            screen += title("Nodes") + tabulate(get_nodes(), headers=["ID", "Name", "Role"])
+            screen += title("Services") + tabulate(get_services(), headers=["ID", "Name", "Image", "Replicas", "Age"])
     if screen != last_screen:
         cls()
         print(screen)

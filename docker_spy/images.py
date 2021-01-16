@@ -15,5 +15,6 @@ def get_images():
         if image.attrs["RepoTags"] != []:
             created = get_age(parse(image.attrs["Created"]).replace(tzinfo=None))
             name_and_tag = image.tags[0].split(":")
-            images.append((name_and_tag[0], name_and_tag[1], created))
+            _id = image.short_id.split(":")[1]
+            images.append((_id, name_and_tag[0], name_and_tag[1], created))
     return images

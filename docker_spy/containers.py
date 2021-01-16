@@ -41,5 +41,6 @@ def get_containers(all=False):
         created = get_age(parse(container.attrs['Created']).replace(tzinfo=None))
         image = colored(get_image_tag(container.image.tags), "cyan")
         status = get_container_status(container.status)
-        containers.append((container.name, image, status, created))
+        _id = container.short_id
+        containers.append((_id, container.name, image, status, created))
     return containers

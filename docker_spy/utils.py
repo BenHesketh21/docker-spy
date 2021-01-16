@@ -1,6 +1,10 @@
 import datetime
 from tabulate import tabulate
 from termcolor import colored
+from docker.errors import APIError
+
+
+from . import client
 
 def get_age(creation_time):
     now = datetime.datetime.utcnow()
@@ -20,3 +24,10 @@ def title(title):
 
 def add_op(op_title, data, headers):
     return title(op_title) + tabulate(data, headers=headers)
+
+def check_swarm():
+    try:
+        client.swarm.reload()
+        return True
+    except APIError:
+        return False
