@@ -9,6 +9,9 @@ def get_image_tag(image_tags):
     else:
         return image_tags[0]
 
+def oldest(e):
+    return e[2]
+
 def get_images():
     images = []
     for image in client.images.list():
@@ -16,4 +19,5 @@ def get_images():
             created = get_age(parse(image.attrs["Created"]).replace(tzinfo=None))
             name_and_tag = image.tags[0].split(":")
             images.append((name_and_tag[0], name_and_tag[1], created))
+    images.sort()
     return images

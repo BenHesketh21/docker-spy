@@ -8,7 +8,12 @@ def get_age(creation_time):
     age = age - datetime.timedelta(microseconds=age.microseconds)
     if age.days != 0:
         return f"{age.days} Days"
-    return age
+    elif age.seconds > 3600:
+        return f"{int(age.seconds/3600)} Hours"
+    elif age.seconds > 60:
+        return f"{int(age.seconds/60)} Mins"
+    else:
+        return f"{int(age.seconds)} Secs"
 
 def cls(): 
     print('\033[H\033[J')
