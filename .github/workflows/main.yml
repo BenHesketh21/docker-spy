@@ -30,3 +30,8 @@ jobs:
         run: |
           echo "Hello" > file.txt
           cat file.txt
+      - name: upload
+        uses: actions/upload-artifacts@v2
+        with:
+          name: outputs
+          path: file.txt
