@@ -33,4 +33,4 @@ jobs:
           echo "::set-output name=var::${var}"
       - name: upload
         run: |
-          echo ${{ steps.tests.outputs.var }}
+          echo "${{ steps.test.outputs.var }}"
