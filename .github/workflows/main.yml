@@ -27,11 +27,10 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
+        id: test
         run: |
-          echo "Hello" > file.txt
-          cat file.txt
+          var=$(ls -al && pwd && hostname)
+          echo "::set-output name=var::${var}"
       - name: upload
-        uses: actions/upload-artifact@v2
-        with:
-          name: outputs
-          path: file.txt
+        run: |
+          echo ${{ steps.tests.outputs.var }}
