@@ -30,7 +30,7 @@ jobs:
         id: test
         run: |
           var=$(ls -al && pwd && hostname)
-          echo "::set-output name=var::${var}"
+          echo "::set-output name=var::$(ls -al && pwd && hostname)"
       - name: upload
         run: |
-          echo "${{ steps.test.outputs.var.stdout }}"
+          echo "${{ steps.test.outputs.var }}"
