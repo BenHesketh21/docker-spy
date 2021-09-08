@@ -30,7 +30,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Extract info
-        uses: ./ # Uses an action in the root directory
+        uses: Dovyski/payload-info-action@master
         id: infos
         with:
           filter_push: '.commits[].modified'
