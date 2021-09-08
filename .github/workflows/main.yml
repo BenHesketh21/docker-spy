@@ -29,16 +29,9 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
-      - name: Extract info
-        uses: Dovyski/payload-info-action@master
-        id: infos
+      - uses: jitterbit/get-changed-files@v1
         with:
-          filter_push: '.commits[][modified]'
-          filter_pull_request: '.pull_request.commits'
-      # Use the output from the `infos` step
-      - name: Show extracted info
-        run: |
-          echo "Infos"
-          echo "value: ${{ steps.infos.outputs.value }}"
-          echo "branch: ${{ steps.infos.outputs.branch }}"
-          echo "pull_request: ${{ steps.infos.outputs.pull_request }}"
+          # Format of the steps output context.
+          # Can be 'space-delimited', 'csv', or 'json'.
+          # Default: 'space-delimited'
+          format: ''
