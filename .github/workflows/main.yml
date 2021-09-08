@@ -32,7 +32,7 @@ jobs:
       - name: Run a one-line script
         id: test
         run: |
-          echo ${{ github.event }}
+          echo ${{ github.event.push }}
       - name: upload
         run: |
           echo "${{ steps.test.outputs.var }}"
