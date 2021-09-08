@@ -29,9 +29,12 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
-      - uses: jitterbit/get-changed-files@v1
+      - id: files
+        uses: jitterbit/get-changed-files@v1
         with:
-          # Format of the steps output context.
-          # Can be 'space-delimited', 'csv', or 'json'.
-          # Default: 'space-delimited'
           format: 'space-delimited'
+      - run: |
+          removed_files=(${{ steps.files.outputs.modified }})
+          for removed_file in ${removed_files[@]}; do
+            echo "Do something with this ${removed_file}."
+          done
