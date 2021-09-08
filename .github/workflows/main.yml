@@ -32,8 +32,7 @@ jobs:
       - name: Run a one-line script
         id: test
         run: |
-          var=$(ls -al && pwd && hostname)
-          echo "::set-output name=var::$(ls -al && pwd && hostname)"
+          echo ${{ github.event.push.paths }}
       - name: upload
         run: |
           echo "${{ steps.test.outputs.var }}"
