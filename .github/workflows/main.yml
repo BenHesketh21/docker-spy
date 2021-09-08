@@ -34,12 +34,7 @@ jobs:
         with:
           format: 'space-delimited'
       - run: |
-          created_files=(${{ steps.files.outputs.created }})
-          changed_files=(${{ steps.files.outputs.modified }})
-          for changed_file in ${removed_files[@]}; do
+          changed_files=(${{ steps.files.outputs.added_modified }})
+          for changed_file in ${changed__files[@]}; do
             echo "Do something with this ${changed_file}."
-          done
-          for created_file in ${created_files[@]}
-          do
-            echo "${created_file}"
           done
