@@ -33,7 +33,7 @@ jobs:
         uses: Dovyski/payload-info-action@master
         id: infos
         with:
-          filter_push: '.commits[].modified'
+          filter_push: '.commits[][modified]'
           filter_pull_request: '.pull_request.commits'
       # Use the output from the `infos` step
       - name: Show extracted info
