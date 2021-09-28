@@ -27,14 +27,15 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      # Runs a single command using the runners shell
-      - id: files
-        uses: jitterbit/get-changed-files@v1
+      - uses: actions/upload-artifact@v2
         with:
-          format: 'space-delimited'
-      - run: |
-          changed_files=(${{ steps.files.outputs.added_modified }})
-          for changed_file in ${changed__files[@]}; do
-            echo "Do something with this ${changed_file}."
-          done
+          name: ui_build
+          path: .
+  after:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download ui Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: ui_build
+      - run: ls -al
